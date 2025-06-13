@@ -2,8 +2,8 @@ from pyrogram import Client, filters
 import yt_dlp
 import os
 
-api_id = 19519617
-api_hash = "60eaa440ba5a22fd655b39472fefa503"
+api_id = 19519617  # Kendi api_id'ni yaz
+api_hash = "60eaa440ba5a22fd655b39472fefa503"  # Kendi api_hash'ini yaz
 
 app = Client("my_userbot", api_id=api_id, api_hash=api_hash)
 
@@ -15,7 +15,7 @@ async def indir_ve_gonder(client, message):
         await message.reply("🔄 İndiriliyor, lütfen bekleyin...")
 
         ydl_opts = {
-            'outtmpl': 'video.mp4',
+            'outtmpl': 'video.%(ext)s',
             'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4',
             'quiet': True
         }
@@ -32,9 +32,7 @@ async def indir_ve_gonder(client, message):
                     supports_streaming=True,
                     caption="🎬 Video başarıyla indirildi."
                 )
-
             os.remove(filename)
-
         except Exception as e:
             await message.reply(f"⚠️ Hata oluştu: {e}")
     else:
