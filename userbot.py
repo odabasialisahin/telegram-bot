@@ -2,21 +2,24 @@ from pyrogram import Client, filters
 import yt_dlp
 import os
 
-api_id = 19519617  # Kendi api_id'ni yaz
-api_hash = "60eaa440ba5a22fd655b39472fefa503"  # Kendi api_hash'ini yaz
+api_id = 19519617
+api_hash = "60eaa440ba5a22fd655b39472fefa503"
 
 app = Client("my_userbot", api_id=api_id, api_hash=api_hash)
 
 @app.on_message(filters.text & ~filters.me)
 async def indir_ve_gonder(client, message):
-    url = message.text
+    url = message.text.strip()
 
-    # Eğer desteklenen sitelerden değilse işlemeden çık
+    # Sadece bağlantı içeren mesajları işle
+    if not url.startswith("http"):
+        return
+
+    # Sadece belirli sitelerden gelen bağlantılar işlensin
     if not any(site in url for site in ["youtube.com", "youtu.be", "tiktok.com", "instagram.com", "facebook.com"]):
         return await message.reply("⛔ Bu bağlantı desteklenmiyor.")
 
-    # Aynı mesajı tekrar tekrar cevaplamayı engelle
-    await message.reply("🔄 İndiriliyor, lütfen bekleyin...")
+    await message.reply("🔄 Video indiriliyor, lütfen bekleyin...")
 
     ydl_opts = {
         'outtmpl': 'video.%(ext)s',
@@ -36,7 +39,6 @@ async def indir_ve_gonder(client, message):
                 supports_streaming=True,
                 caption="🎬 Video başarıyla indirildi."
             )
-
         os.remove(filename)
 
     except Exception as e:
